@@ -12,8 +12,45 @@
 /package-lock.json
 /yarn.lock
 
-# Environment files
-/.env
+# Environment
+.env
+.env.local
+
+# Cordova
+platforms/
+plugins/
+plugins/fetch.json
+
+# Android
+*.apk
+*.ap_
+*.aab
+*.dex
+*.class
+*.log
+local.properties
+.gradle/
+captures/
+outputs/
+android/
+
+# iOS
+*.ipa
+*.xcuserstate
+*.xcworkspace
+*.xcodeproj/*
+!*.xcodeproj/project.pbxproj
+!*.xcodeproj/xcshareddata/
+!*.xcodeproj/project.xcworkspace/
+DerivedData/
+build/
+ios/
+
+# Mac
+.DS_Store
+
+# Windows
+Thumbs.db
 
 # Angular CLI and build artefacts
 /.angular-cli.json
@@ -26,3 +63,25 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# IDEs
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# Temporary files
+*.tmp
+*.temp
+node_modules
+node_modules
+
+# Ionic / Angular
+www/
+build/
+/dist/
+.tmp/
+.angular/
+.cache/

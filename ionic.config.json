@@ -1,0 +1,8 @@
+{
+  "name": "app",
+  "type": "angular",
+  "defaultProject": "app",
+  "integrations": {
+    "cordova": {}
+  }
+}
