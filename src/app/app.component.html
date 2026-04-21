@@ -1,11 +1,16 @@
+
 <ion-app>
   <ion-header class="ion-no-border">
     <ion-toolbar color="primary">
       <ion-title>Todo App</ion-title>
+      <ion-buttons slot="end">
+        <ion-button (click)="openCategoryManager()">
+          <ion-icon name="settings-outline" slot="icon-only"></ion-icon>
+        </ion-button>
+      </ion-buttons>
     </ion-toolbar>
-  </ion-header>
 
-  <!-- Filters -->
+    <!-- Filters -->
     <ion-toolbar color="primary">
       <ion-content scroll-x="true" class="filter-toolbar">
         <div class="filter-container">
@@ -23,4 +28,65 @@
         </div>
       </ion-content>
     </ion-toolbar>
+  </ion-header>
+
+  <ion-content [fullscreen]="true" class="ion-padding">
+    
+    <!-- Add Task Form -->
+    <ion-card class="add-task-card">
+      <ion-card-content>
+        <ion-item lines="none">
+          <ion-input placeholder="What needs to be done?" [(ngModel)]="newTaskTitle"></ion-input>
+        </ion-item>
+        <ion-item lines="none">
+          <ion-label>Category</ion-label>
+          <ion-select [(ngModel)]="selectedCategoryId">
+            <ion-select-option *ngFor="let cat of (categories$ | async)" [value]="cat.id">
+              {{ cat.name }}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+        <ion-button expand="block" (click)="addTask()" [disabled]="!newTaskTitle.trim()">
+          Add Task
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Task List -->
+    <ion-list lines="full">
+      <ion-list-header>
+        <ion-label>Tasks</ion-label>
+      </ion-list-header>
+
+      <ion-item-sliding *ngFor="let task of (tasks$ | async)">
+        <ion-item (click)="toggleTask(task)">
+          <ion-checkbox slot="start" [checked]="task.completed"></ion-checkbox>
+          <ion-label [class.completed]="task.completed">
+            <h2>{{ task.title }}</h2>
+            <p>
+              <ion-badge [style.--background]="getCategoryColor(task.categoryId, categories$ | async)">
+                {{ getCategoryName(task.categoryId, categories$ | async) }}
+              </ion-badge>
+              <span>{{ task.createdAt | date:'short' }}</span>
+            </p>
+          </ion-label>
+        </ion-item>
+
+        <ion-item-options side="end">
+          <ion-item-option color="primary" (click)="editTask(task)">
+            <ion-icon name="pencil-outline" slot="icon-only"></ion-icon>
+          </ion-item-option>
+          <ion-item-option color="danger" (click)="deleteTask(task)">
+            <ion-icon name="trash-outline" slot="icon-only"></ion-icon>
+          </ion-item-option>
+        </ion-item-options>
+      </ion-item-sliding>
+
+      <div *ngIf="(tasks$ | async)?.length === 0" class="empty-state">
+        <ion-icon name="checkmark-done-circle-outline"></ion-icon>
+        <p>No tasks found for this category!</p>
+      </div>
+    </ion-list>
+
+  </ion-content>
 </ion-app>
