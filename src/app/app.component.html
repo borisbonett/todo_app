@@ -4,4 +4,23 @@
       <ion-title>Todo App</ion-title>
     </ion-toolbar>
   </ion-header>
+
+  <!-- Filters -->
+    <ion-toolbar color="primary">
+      <ion-content scroll-x="true" class="filter-toolbar">
+        <div class="filter-container">
+          <ion-chip [outline]="(currentFilter$ | async) !== null" (click)="filterByCategory(null)">
+            <ion-label>All</ion-label>
+          </ion-chip>
+          <ion-chip *ngFor="let cat of (categories$ | async)" 
+                    [outline]="(currentFilter$ | async) !== cat.id"
+                    (click)="filterByCategory(cat.id)"
+                    [style.--background]="cat.color"
+                    [style.--color]="'white'">
+            <ion-label>{{ cat.name }}</ion-label>
+            <ion-icon name="pencil-outline" (click)="editCategory(cat); $event.stopPropagation()"></ion-icon>
+          </ion-chip>
+        </div>
+      </ion-content>
+    </ion-toolbar>
 </ion-app>
