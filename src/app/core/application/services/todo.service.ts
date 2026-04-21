@@ -11,12 +11,12 @@ export class TodoService {
   private categoriesSubject = new BehaviorSubject<Category[]>([]);
   private filterSubject = new BehaviorSubject<string | null>(null);
 
-  // Observables para la datos cuan hay cambios UI
+  // Observables for the UI
   tasks$ = this.tasksSubject.asObservable();
   categories$ = this.categoriesSubject.asObservable();
   currentFilter$ = this.filterSubject.asObservable();
 
-  // Flujo combinado para tareas filtradas
+  // Combined stream for filtered tasks
   filteredTasks$: Observable<Task[]> = combineLatest([
     this.tasks$,
     this.currentFilter$
@@ -34,19 +34,35 @@ export class TodoService {
     this.loadInitialData();
   }
 
+  /**
+   * Carga los datos iniciales desde Firebase.
+   * Se suscribe a los flujos de datos para obtener actualizaciones en tiempo real.
+   */
   private loadInitialData() {
-    this.taskRepo.getTasks().pipe(take(1)).subscribe(tasks => this.tasksSubject.next(tasks));
-    this.categoryRepo.getCategories().pipe(take(1)).subscribe(cats => {
-      if (cats.length === 0) {
-        // Categoría predeterminada si no existe ninguna.
-        cats = [{ id: 'default', name: 'General', color: '#3880ff' }];
-        this.categoryRepo.saveCategories(cats).subscribe();
-      }
-      this.categoriesSubject.next(cats);
+    console.log('TodoService: loadInitialData() started');
+    this.taskRepo.getTasks().subscribe({
+      next: tasks => {
+        console.log('TodoService: Received tasks from repo:', tasks);
+        this.tasksSubject.next(tasks);
+      },
+      error: err => console.error('TodoService: Error loading tasks:', err)
+    });
+
+    this.categoryRepo.getCategories().subscribe({
+      next: cats => {
+        console.log('TodoService: Received categories from repo:', cats);
+        if (cats.length === 0) {
+          console.log('TodoService: No categories found, creating default');
+          const defaultCats = [{ id: 'default', name: 'General', color: '#3880ff' }];
+          this.categoryRepo.saveCategories(defaultCats).subscribe();
+        }
+        this.categoriesSubject.next(cats);
+      },
+      error: err => console.error('TodoService: Error loading categories:', err)
     });
   }
 
-  // Operaciones de tareas
+  // Task Operations
   addTask(title: string, categoryId?: string) {
     const newTask: Task = {
       id: crypto.randomUUID(),
@@ -73,18 +89,21 @@ export class TodoService {
     this.updateTasks(updated);
   }
 
+  /**
+   * Elimina una tarea de Firebase.
+   */
   deleteTask(id: string) {
-    const updated = this.tasksSubject.value.filter(t => t.id !== id);
-    this.updateTasks(updated);
+    this.taskRepo.deleteTask(id).subscribe();
   }
 
+  /**
+   * Sincroniza la lista de tareas con Firebase.
+   */
   private updateTasks(tasks: Task[]) {
-    this.taskRepo.saveTasks(tasks).pipe(take(1)).subscribe(() => {
-      this.tasksSubject.next(tasks);
-    });
+    this.taskRepo.saveTasks(tasks).subscribe();
   }
 
-  // Operaciones de categoría
+  // Category Operations
   addCategory(name: string, color: string) {
     const newCat: Category = { id: crypto.randomUUID(), name, color };
     const updated = [...this.categoriesSubject.value, newCat];
@@ -98,23 +117,21 @@ export class TodoService {
     this.updateCategories(updated);
   }
 
+  /**
+   * Elimina una categoría de Firebase.
+   */
   deleteCategory(id: string) {
-    const updated = this.categoriesSubject.value.filter(c => c.id !== id);
-    // Tareas de limpieza con esta categoría
-    const updatedTasks = this.tasksSubject.value.map(t => 
-      t.categoryId === id ? { ...t, categoryId: undefined } : t
-    );
-    this.updateCategories(updated);
-    this.updateTasks(updatedTasks);
+    this.categoryRepo.deleteCategory(id).subscribe();
   }
 
+  /**
+   * Sincroniza la lista de categorías con Firebase.
+   */
   private updateCategories(cats: Category[]) {
-    this.categoryRepo.saveCategories(cats).pipe(take(1)).subscribe(() => {
-      this.categoriesSubject.next(cats);
-    });
+    this.categoryRepo.saveCategories(cats).subscribe();
   }
 
-  // Operaciones de filtrado
+  // Filter Operations
   setFilter(categoryId: string | null) {
     this.filterSubject.next(categoryId);
   }
