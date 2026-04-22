@@ -5,8 +5,12 @@ import { AppComponent } from './app.component';
 import { IonicModule } from '@ionic/angular';
 
 import { TaskRepository, CategoryRepository } from './core/domain/repositories/todo.repository';
-import { LocalStorageTaskRepository, LocalStorageCategoryRepository } from './core/infrastructure/repositories/local-storage-todo.repository';
+import { FirebaseTaskRepository, FirebaseCategoryRepository } from './core/infrastructure/repositories/firebase-todo.repository';
 import { FormsModule } from '@angular/forms';
+
+import { AngularFireModule } from '@angular/fire/compat';
+import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
+import { environment } from '../environments/environment';
 
 @NgModule({
   declarations: [
@@ -15,11 +19,13 @@ import { FormsModule } from '@angular/forms';
   imports: [
     BrowserModule,
     FormsModule,
-    IonicModule.forRoot()
+    IonicModule.forRoot(),
+    AngularFireModule.initializeApp(environment.firebase),
+    AngularFirestoreModule
   ],
   providers: [
-    { provide: TaskRepository, useClass: LocalStorageTaskRepository },
-    { provide: CategoryRepository, useClass: LocalStorageCategoryRepository }
+    { provide: TaskRepository, useClass: FirebaseTaskRepository },
+    { provide: CategoryRepository, useClass: FirebaseCategoryRepository }
   ],
   bootstrap: [AppComponent]
 })

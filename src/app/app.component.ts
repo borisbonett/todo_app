@@ -29,6 +29,7 @@ export class AppComponent implements OnInit {
   ngOnInit() {}
 
   // Task Actions
+
   addTask() {
     if (this.newTaskTitle.trim()) {
       this.todoService.addTask(this.newTaskTitle, this.selectedCategoryId);
