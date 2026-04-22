@@ -93,7 +93,7 @@ export class TodoService {
    * Elimina una tarea de Firebase.
    */
   deleteTask(id: string) {
-    this.taskRepo.deleteTask(id).subscribe();
+    this.taskRepo.deleteTask(id);
   }
 
   /**
@@ -121,7 +121,7 @@ export class TodoService {
    * Elimina una categoría de Firebase.
    */
   deleteCategory(id: string) {
-    this.categoryRepo.deleteCategory(id).subscribe();
+    this.categoryRepo.deleteCategory(id);
   }
 
   /**
