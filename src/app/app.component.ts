@@ -139,3 +139,4 @@ export class AppComponent implements OnInit {
     return cat ? cat.name : 'Uncategorized';
   }
 }
+

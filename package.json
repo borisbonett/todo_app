@@ -33,12 +33,13 @@
     "@ionic/angular-toolkit": "^6.1.0",
     "@ionic/cordova-builders": "^6.1.0",
     "@types/jasmine": "~4.0.0",
-    "cordova-ios": "^8.0.1",
     "cordova-plugin-device": "2.0.2",
+    "cordova-plugin-inappbrowser": "^6.0.0",
     "cordova-plugin-ionic-keyboard": "^2.0.5",
     "cordova-plugin-ionic-webview": "^5.0.0",
     "cordova-plugin-splashscreen": "5.0.2",
     "cordova-plugin-statusbar": "^2.4.2",
+    "cordova-plugin-wkwebview-engine": "^1.2.2",
     "jasmine-core": "~4.3.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.1.0",
@@ -53,11 +54,12 @@
       "cordova-plugin-device": {},
       "cordova-plugin-splashscreen": {},
       "cordova-plugin-ionic-webview": {},
-      "cordova-plugin-ionic-keyboard": {}
+      "cordova-plugin-ionic-keyboard": {},
+      "cordova-plugin-inappbrowser": {},
+      "cordova-plugin-wkwebview-engine": {}
     },
     "platforms": [
-      "android",
-      "ios"
+      "android"
     ]
   }
 }
