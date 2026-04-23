@@ -148,5 +148,9 @@ export class AppComponent implements OnInit {
     const cat = categories.find(c => c.id === categoryId);
     return cat ? cat.name : 'Uncategorized';
   }
+
+  trackByTask(index: number, task: Task): string {
+    return task.id;
+  }
 }
 

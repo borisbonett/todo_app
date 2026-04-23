@@ -1,72 +1,97 @@
 <ion-app>
-  <ion-header class="ion-no-border">
-    <ion-toolbar color="primary">
-      <ion-title>Todo App</ion-title>
+  <!-- Premium Animated Header -->
+  <ion-header class="ion-no-border premium-header">
+    <ion-toolbar class="transparent-toolbar">
+      <ion-title class="main-title">Todo App</ion-title>
       <ion-buttons slot="end">
-        <ion-button (click)="openCategoryManager()">
-          <ion-icon name="settings-outline" slot="icon-only"></ion-icon>
+        <ion-button class="settings-btn" (click)="openCategoryManager()">
+          <ion-icon name="settings" slot="icon-only"></ion-icon>
         </ion-button>
       </ion-buttons>
     </ion-toolbar>
+    
+    <div class="header-decoration">
+      <h2 class="greeting">Hola! 👋</h2>
+      <p class="subtitle">Vamos a organizar tu día.</p>
+    </div>
   </ion-header>
 
-  <ion-content [fullscreen]="true" class="ion-padding">
+  <ion-content [fullscreen]="true" class="premium-content">
+    
+    <div class="content-wrapper">
+      <!-- Add Task Form -->
+      <ion-card class="premium-card add-task-card">
+        <ion-card-content>
+          <div class="input-group">
+            <ion-item lines="none" class="premium-input-item">
+              <ion-icon name="add-circle-outline" slot="start" color="medium"></ion-icon>
+              <ion-input placeholder="¿Qué necesitas hacer hoy?" [(ngModel)]="newTaskTitle"></ion-input>
+            </ion-item>
+          </div>
+          
+          <div class="action-group">
+            <ion-item lines="none" class="category-select-item">
+              <ion-icon name="folder-open-outline" slot="start" color="medium"></ion-icon>
+              <ion-select [(ngModel)]="selectedCategoryId" interface="popover" placeholder="Categoría">
+                <ion-select-option *ngFor="let cat of (categories$ | async)" [value]="cat.id">
+                  {{ cat.name }}
+                </ion-select-option>
+              </ion-select>
+            </ion-item>
+            
+            <ion-button class="premium-add-btn" expand="block" shape="round" (click)="addTask()" [disabled]="!newTaskTitle.trim()">
+              Agregar
+            </ion-button>
+          </div>
+        </ion-card-content>
+      </ion-card>
 
-    <!-- Add Task Form -->
-    <ion-card class="add-task-card">
-      <ion-card-content>
-        <ion-item lines="none">
-          <ion-input placeholder="What needs to be done?" [(ngModel)]="newTaskTitle"></ion-input>
-        </ion-item>
-        <ion-item lines="none">
-          <ion-label>Category</ion-label>
-          <ion-select [(ngModel)]="selectedCategoryId">
-            <ion-select-option *ngFor="let cat of (categories$ | async)" [value]="cat.id">
-              {{ cat.name }}
-            </ion-select-option>
-          </ion-select>
-        </ion-item>
-        <ion-button expand="block" (click)="addTask()" [disabled]="!newTaskTitle.trim()">
-          Add Task
-        </ion-button>
-      </ion-card-content>
-    </ion-card>
+      <!-- Task List -->
+      <div class="task-list-container">
+        <div class="list-header">
+          <h3>Tus Tareas</h3>
+          <ion-badge class="task-count" color="primary">{{ (tasks$ | async)?.length || 0 }}</ion-badge>
+        </div>
 
-    <!-- Task List -->
-    <ion-list lines="full">
-      <ion-list-header>
-        <ion-label>Tasks</ion-label>
-      </ion-list-header>
+        <ion-list lines="none" class="premium-list">
+          <!-- Nota: trackByTask soluciona el problema de los clics cruzados -->
+          <ion-item-sliding *ngFor="let task of (tasks$ | async); trackBy: trackByTask" class="premium-sliding-item">
+            <ion-item class="premium-task-item" (click)="toggleTask(task)" [class.is-completed]="task.completed" button detail="false">
+              <div class="checkbox-wrapper" slot="start">
+                <ion-checkbox [checked]="task.completed" mode="ios"></ion-checkbox>
+              </div>
+              
+              <ion-label class="task-label">
+                <h2 class="task-title">{{ task.title }}</h2>
+                <div class="task-meta">
+                  <ion-badge class="category-badge" [style.--background]="getCategoryColor(task.categoryId, categories$ | async)">
+                    {{ getCategoryName(task.categoryId, categories$ | async) }}
+                  </ion-badge>
+                  <span class="task-date">{{ task.createdAt | date:'short' }}</span>
+                </div>
+              </ion-label>
+            </ion-item>
 
-      <ion-item-sliding *ngFor="let task of (tasks$ | async)">
-        <ion-item (click)="toggleTask(task)">
-          <ion-checkbox slot="start" [checked]="task.completed"></ion-checkbox>
-          <ion-label [class.completed]="task.completed">
-            <h2>{{ task.title }}</h2>
-            <p>
-              <ion-badge [style.--background]="getCategoryColor(task.categoryId, categories$ | async)">
-                {{ getCategoryName(task.categoryId, categories$ | async) }}
-              </ion-badge>
-              <span>{{ task.createdAt | date:'short' }}</span>
-            </p>
-          </ion-label>
-        </ion-item>
+            <ion-item-options side="end">
+              <ion-item-option class="premium-option edit-option" color="tertiary" (click)="editTask(task)">
+                <ion-icon name="pencil" slot="icon-only"></ion-icon>
+              </ion-item-option>
+              <ion-item-option class="premium-option delete-option" color="danger" (click)="deleteTask(task)">
+                <ion-icon name="trash" slot="icon-only"></ion-icon>
+              </ion-item-option>
+            </ion-item-options>
+          </ion-item-sliding>
+        </ion-list>
 
-        <ion-item-options side="end">
-          <ion-item-option color="primary" (click)="editTask(task)">
-            <ion-icon name="pencil-outline" slot="icon-only"></ion-icon>
-          </ion-item-option>
-          <ion-item-option color="danger" (click)="deleteTask(task)">
-            <ion-icon name="trash-outline" slot="icon-only"></ion-icon>
-          </ion-item-option>
-        </ion-item-options>
-      </ion-item-sliding>
-
-      <div *ngIf="(tasks$ | async)?.length === 0" class="empty-state">
-        <ion-icon name="checkmark-done-circle-outline"></ion-icon>
-        <p>No tasks found for this category!</p>
+        <!-- Empty State -->
+        <div *ngIf="(tasks$ | async)?.length === 0" class="premium-empty-state">
+          <div class="empty-icon-wrapper">
+            <ion-icon name="sparkles"></ion-icon>
+          </div>
+          <h3>¡Todo al día!</h3>
+          <p>No tienes tareas pendientes por ahora.</p>
+        </div>
       </div>
-    </ion-list>
-
+    </div>
   </ion-content>
 </ion-app>

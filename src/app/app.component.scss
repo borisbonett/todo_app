@@ -1,65 +1,288 @@
-.filter-toolbar {
-  --background: transparent;
-  padding: 0 10px;
+/* Premium CSS Variables & Typography */
+ion-app {
+  --ion-font-family: 'Inter', 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --ion-background-color: #f8fafc;
+  --premium-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+  --premium-gradient: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
 }
 
-.filter-container {
+/* Header Styling */
+.premium-header {
+  background: var(--premium-gradient);
+  border-bottom-left-radius: 30px;
+  border-bottom-right-radius: 30px;
+  padding-bottom: 20px;
+  box-shadow: 0 4px 20px rgba(124, 58, 237, 0.4);
+  position: relative;
+  z-index: 10;
+  
+  .transparent-toolbar {
+    --background: transparent;
+    --color: white;
+    padding-top: env(safe-area-inset-top);
+  }
+
+  .main-title {
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    font-size: 1.2rem;
+  }
+
+  .settings-btn {
+    --color: white;
+    opacity: 0.9;
+    &:hover { opacity: 1; }
+  }
+
+  .header-decoration {
+    padding: 10px 24px;
+    color: white;
+    
+    .greeting {
+      font-size: 2rem;
+      font-weight: 800;
+      margin: 0;
+      letter-spacing: -0.5px;
+    }
+    
+    .subtitle {
+      font-size: 0.95rem;
+      opacity: 0.8;
+      margin-top: 5px;
+      font-weight: 400;
+    }
+  }
+}
+
+/* Content Area */
+.premium-content {
+  --background: var(--ion-background-color);
+}
+
+.content-wrapper {
+  padding: 24px 16px;
+  margin-top: -30px; /* Overlap with header */
+  position: relative;
+  z-index: 20;
+}
+
+/* Premium Card */
+.premium-card {
+  margin: 0;
+  border-radius: 20px;
+  background: white;
+  box-shadow: var(--premium-shadow);
+  overflow: visible;
+  
+  ion-card-content {
+    padding: 20px;
+  }
+}
+
+/* Add Task Form Elements */
+.input-group {
+  background: #f1f5f9;
+  border-radius: 14px;
+  margin-bottom: 15px;
+  
+  .premium-input-item {
+    --background: transparent;
+    --padding-start: 12px;
+    
+    ion-input {
+      font-weight: 500;
+      font-size: 1rem;
+      --placeholder-color: #94a3b8;
+      --placeholder-font-weight: 400;
+    }
+  }
+}
+
+.action-group {
   display: flex;
-  overflow-x: auto;
-  padding: 5px 0;
+  align-items: center;
+  gap: 12px;
+  
+  .category-select-item {
+    flex: 1;
+    --background: #f1f5f9;
+    border-radius: 12px;
+    --min-height: 48px;
+    --padding-start: 12px;
+    
+    ion-select {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: #334155;
+      width: 100%;
+      max-width: 100%;
+    }
+  }
 
-  &::-webkit-scrollbar {
-    display: none;
+  .premium-add-btn {
+    margin: 0;
+    height: 48px;
+    flex: 0 0 auto;
+    --background: var(--premium-gradient);
+    --box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+    font-weight: 600;
+    letter-spacing: 0.5px;
   }
 }
 
-.add-task-card {
-  margin: 0 0 20px 0;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  --background: #fff;
-
-  ion-item {
-    --padding-start: 10px;
-    margin-bottom: 5px;
+/* Task List */
+.task-list-container {
+  margin-top: 32px;
+  
+  .list-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    padding: 0 8px;
+    
+    h3 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #1e293b;
+      margin: 0;
+    }
+    
+    .task-count {
+      border-radius: 10px;
+      padding: 4px 8px;
+      font-size: 0.8rem;
+      background: #e0e7ff;
+      color: #4338ca;
+    }
   }
 }
 
-.completed {
-  h2 {
-    text-decoration: line-through;
-    color: #999;
+.premium-list {
+  background: transparent;
+}
+
+.premium-sliding-item {
+  margin-bottom: 12px;
+  border-radius: 16px;
+  background: white;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+  overflow: hidden;
+}
+
+.premium-task-item {
+  --background: white;
+  --padding-start: 16px;
+  --padding-end: 16px;
+  --padding-top: 12px;
+  --padding-bottom: 12px;
+  --inner-padding-end: 0;
+  
+  .checkbox-wrapper {
+    margin-right: 16px;
+    display: flex;
+    align-items: center;
+    
+    ion-checkbox {
+      --size: 22px;
+      --checkmark-width: 2px;
+      --background-checked: #10b981;
+      --border-color-checked: #10b981;
+    }
+  }
+
+  .task-label {
+    margin: 0;
+  }
+
+  .task-title {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #334155;
+    margin-bottom: 6px;
+    transition: all 0.3s ease;
+  }
+
+  .task-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    
+    .category-badge {
+      font-size: 0.7rem;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    
+    .task-date {
+      font-size: 0.75rem;
+      color: #94a3b8;
+    }
+  }
+  
+  &.is-completed {
+    .task-title {
+      text-decoration: line-through;
+      color: #94a3b8;
+    }
+    .task-meta {
+      opacity: 0.7;
+    }
   }
 }
 
-ion-badge {
-  margin-right: 10px;
-  --color: white;
-  text-transform: uppercase;
-  font-size: 10px;
-  letter-spacing: 0.5px;
-}
-
-.empty-state {
-  text-align: center;
-  margin-top: 50px;
-  color: #999;
-
+/* Item Options (Swipe) */
+.premium-option {
+  margin: 0;
   ion-icon {
-    font-size: 64px;
-    margin-bottom: 10px;
-    opacity: 0.5;
+    font-size: 24px;
+  }
+  &.edit-option {
+    --background: #f59e0b;
+  }
+  &.delete-option {
+    --background: #ef4444;
   }
 }
 
-ion-item {
-  --transition: 0.3s ease-in-out;
-
-  h2 {
-    font-weight: 500;
+/* Empty State */
+.premium-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+  
+  .empty-icon-wrapper {
+    width: 80px;
+    height: 80px;
+    background: #e0e7ff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    
+    ion-icon {
+      font-size: 40px;
+      color: #6366f1;
+    }
   }
-}
-
-.alert-danger {
-  color: var(--ion-color-danger) !important;
+  
+  h3 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0 0 8px 0;
+  }
+  
+  p {
+    font-size: 0.95rem;
+    color: #64748b;
+    margin: 0;
+  }
 }
