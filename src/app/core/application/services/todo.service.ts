@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, combineLatest, map, Observable, take, tap } from 'rxjs';
+import { BehaviorSubject, combineLatest, map, Observable, startWith, tap } from 'rxjs';
 import { Task, Category } from '../../domain/models/todo.model';
 import { TaskRepository, CategoryRepository } from '../../domain/repositories/todo.repository';
 
@@ -24,13 +24,18 @@ export class TodoService {
     map(([tasks, filterId]) => {
       if (!filterId) return tasks;
       return tasks.filter(t => t.categoryId === filterId);
-    })
+    }),
+    startWith([]) // Fuerza una emisión inicial vacía
   );
 
   constructor(
     private taskRepo: TaskRepository,
     private categoryRepo: CategoryRepository
   ) {
+    // Ya no llamamos a loadInitialData() aquí para no bloquear el inicio
+  }
+
+  public init() {
     this.loadInitialData();
   }
 
@@ -40,23 +45,27 @@ export class TodoService {
    */
   private loadInitialData() {
     console.log('TodoService: loadInitialData() started');
-    this.taskRepo.getTasks().subscribe({
-      next: tasks => {
-        console.log('TodoService: Received tasks from repo:', tasks);
-        this.tasksSubject.next(tasks);
-      },
+
+    // Agregamos startWith([]) para que la UI no se bloquee esperando a Firebase
+    this.taskRepo.getTasks().pipe(
+      tap(tasks => console.log('TodoService: Received tasks:', tasks?.length || 0))
+    ).subscribe({
+      next: tasks => this.tasksSubject.next(tasks || []),
       error: err => console.error('TodoService: Error loading tasks:', err)
     });
 
-    this.categoryRepo.getCategories().subscribe({
+    this.categoryRepo.getCategories().pipe(
+      tap(cats => console.log('TodoService: Received categories:', cats?.length || 0))
+    ).subscribe({
       next: cats => {
-        console.log('TodoService: Received categories from repo:', cats);
-        if (cats.length === 0) {
+        if (cats && cats.length === 0) {
           console.log('TodoService: No categories found, creating default');
           const defaultCats = [{ id: 'default', name: 'General', color: '#3880ff' }];
           this.categoryRepo.saveCategories(defaultCats).subscribe();
+          this.categoriesSubject.next(defaultCats);
+        } else {
+          this.categoriesSubject.next(cats || []);
         }
-        this.categoriesSubject.next(cats);
       },
       error: err => console.error('TodoService: Error loading categories:', err)
     });
@@ -76,14 +85,14 @@ export class TodoService {
   }
 
   toggleTask(id: string) {
-    const updated = this.tasksSubject.value.map(t => 
+    const updated = this.tasksSubject.value.map(t =>
       t.id === id ? { ...t, completed: !t.completed } : t
     );
     this.updateTasks(updated);
   }
 
   updateTask(id: string, title: string, categoryId?: string) {
-    const updated = this.tasksSubject.value.map(t => 
+    const updated = this.tasksSubject.value.map(t =>
       t.id === id ? { ...t, title, categoryId } : t
     );
     this.updateTasks(updated);
@@ -93,7 +102,7 @@ export class TodoService {
    * Elimina una tarea de Firebase.
    */
   deleteTask(id: string) {
-    this.taskRepo.deleteTask(id);
+    this.taskRepo.deleteTask(id).subscribe();
   }
 
   /**
@@ -111,7 +120,7 @@ export class TodoService {
   }
 
   updateCategory(id: string, name: string, color: string) {
-    const updated = this.categoriesSubject.value.map(c => 
+    const updated = this.categoriesSubject.value.map(c =>
       c.id === id ? { ...c, name, color } : c
     );
     this.updateCategories(updated);
@@ -121,7 +130,7 @@ export class TodoService {
    * Elimina una categoría de Firebase.
    */
   deleteCategory(id: string) {
-    this.categoryRepo.deleteCategory(id);
+    this.categoryRepo.deleteCategory(id).subscribe();
   }
 
   /**

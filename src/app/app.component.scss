@@ -7,6 +7,7 @@
   display: flex;
   overflow-x: auto;
   padding: 5px 0;
+
   &::-webkit-scrollbar {
     display: none;
   }
@@ -15,9 +16,9 @@
 .add-task-card {
   margin: 0 0 20px 0;
   border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   --background: #fff;
-  
+
   ion-item {
     --padding-start: 10px;
     margin-bottom: 5px;
@@ -43,7 +44,7 @@ ion-badge {
   text-align: center;
   margin-top: 50px;
   color: #999;
-  
+
   ion-icon {
     font-size: 64px;
     margin-bottom: 10px;
@@ -53,7 +54,7 @@ ion-badge {
 
 ion-item {
   --transition: 0.3s ease-in-out;
-  
+
   h2 {
     font-weight: 500;
   }

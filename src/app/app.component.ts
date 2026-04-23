@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Platform } from '@ionic/angular';
 import { Observable } from 'rxjs';
 import { TodoService } from './core/application/services/todo.service';
 import { Task, Category } from './core/domain/models/todo.model';
@@ -19,15 +20,28 @@ export class AppComponent implements OnInit {
 
   constructor(
     private todoService: TodoService,
-    private alertCtrl: AlertController
+    private alertCtrl: AlertController,
+    private platform: Platform
   ) {
     this.tasks$ = this.todoService.filteredTasks$;
     this.categories$ = this.todoService.categories$;
     this.currentFilter$ = this.todoService.currentFilter$;
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.initializeApp();
+  }
 
+  initializeApp() {
+    this.platform.ready().then(() => {
+      console.log('AppComponent: Platform ready, initializing Firebase...');
+      this.todoService.init(); // Iniciamos Firebase después de que la app cargó
+
+      if ((window as any).navigator && (window as any).navigator.splashscreen) {
+        (window as any).navigator.splashscreen.hide();
+      }
+    });
+  }
   // Task Actions
 
   addTask() {
@@ -46,7 +60,7 @@ export class AppComponent implements OnInit {
   }
 
   async editTask(task: Task) {
-    const categories = await new Promise<Category[]>(resolve => 
+    const categories = await new Promise<Category[]>(resolve =>
       this.categories$.subscribe(c => resolve(c))
     );
 
@@ -72,7 +86,7 @@ export class AppComponent implements OnInit {
 
   // Category Actions
   async openCategoryManager() {
-    const categories = await new Promise<Category[]>(resolve => 
+    const categories = await new Promise<Category[]>(resolve =>
       this.categories$.subscribe(c => resolve(c))
     );
 
@@ -121,10 +135,6 @@ export class AppComponent implements OnInit {
       ]
     });
     await alert.present();
-  }
-
-  filterByCategory(categoryId: string | null) {
-    this.todoService.setFilter(categoryId);
   }
 
   getCategoryColor(categoryId?: string, categories: Category[] | null = []): string {

@@ -20,7 +20,6 @@
     "@angular/platform-browser-dynamic": "^14.2.0",
     "@angular/router": "^14.2.0",
     "@ionic/angular": "^6.7.5",
-    "cordova-android": "13.0.0",
     "firebase": "^9.23.0",
     "rxjs": "~7.5.0",
     "tslib": "^2.3.0",
@@ -31,21 +30,22 @@
     "@angular/cli": "~14.2.13",
     "@angular/compiler-cli": "^14.2.0",
     "@ionic/angular-toolkit": "^6.1.0",
-    "@ionic/cordova-builders": "^6.1.0",
+    "@ionic/cordova-builders": "^12.3.0",
     "@types/jasmine": "~4.0.0",
+    "cordova-android": "^15.0.0",
+    "cordova-ios": "^8.0.1",
     "cordova-plugin-device": "2.0.2",
     "cordova-plugin-inappbrowser": "^6.0.0",
     "cordova-plugin-ionic-keyboard": "^2.0.5",
-    "cordova-plugin-ionic-webview": "^5.0.0",
     "cordova-plugin-splashscreen": "5.0.2",
     "cordova-plugin-statusbar": "^2.4.2",
-    "cordova-plugin-wkwebview-engine": "^1.2.2",
     "jasmine-core": "~4.3.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.1.0",
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.0.0",
+    "sourcemap-codec": "^1.4.8",
     "typescript": "~4.7.2"
   },
   "cordova": {
@@ -53,12 +53,11 @@
       "cordova-plugin-statusbar": {},
       "cordova-plugin-device": {},
       "cordova-plugin-splashscreen": {},
-      "cordova-plugin-ionic-webview": {},
       "cordova-plugin-ionic-keyboard": {},
-      "cordova-plugin-inappbrowser": {},
-      "cordova-plugin-wkwebview-engine": {}
+      "cordova-plugin-inappbrowser": {}
     },
     "platforms": [
+      "ios",
       "android"
     ]
   }

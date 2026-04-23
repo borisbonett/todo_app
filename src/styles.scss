@@ -1,1 +1,12 @@
 /* You can add global styles to this file, and also import other style files */
+/* You can add global styles to this file, and also import other style files */
+
+/* Forzar que la app respete el notch del iPhone */
+body {
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+
+ion-content {
+    --offset-top: env(safe-area-inset-top) !important;
+    --offset-bottom: env(safe-area-inset-bottom) !important;
+}
